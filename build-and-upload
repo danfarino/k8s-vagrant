@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -Eeuxo pipefail
+
+GOOS=linux GOARCH=amd64 go build -o test-go-server .
+docker build -t test-go-server .
+docker save -o test-go-server.tar test-go-server
+
+(vagrant upload test-go-server.tar master && vagrant ssh master -- 'docker load < test-go-server.tar') &
+(vagrant upload test-go-server.tar worker1 && vagrant ssh worker1 -- 'docker load < test-go-server.tar') &
+(vagrant upload test-go-server.tar worker2 && vagrant ssh worker2 -- 'docker load < test-go-server.tar') &
+
+wait

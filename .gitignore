@@ -1,0 +1,4 @@
+*.log
+test-go-server
+test-go-server.tar
+.vagrant/
